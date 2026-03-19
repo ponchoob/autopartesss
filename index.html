@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TORQUE — Autopartes de Alto Rendimiento</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:   #080808;
+  --dark1:   #101010;
+  --dark2:   #181818;
+  --dark3:   #222;
+  --wire:    #2a2a2a;
+  --red:     #d42b0f;
+  --red2:    #ff3d1f;
+  --amber:   #e8a000;
+  --text:    #e8e8e8;
+  --muted:   #777;
+  --border:  rgba(255,255,255,0.06);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ─── CUSTOM CURSOR ─── */
+.cursor {
+  position: fixed; top: 0; left: 0;
+  width: 12px; height: 12px;
+  background: var(--red);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform .15s;
+  mix-blend-mode: difference;
+}
+.cursor.big { transform: scale(4); }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--red); }
+
+/* ─── TICKER ─── */
+.ticker-wrap {
+  background: var(--red);
+  height: 32px; overflow: hidden;
+  display: flex; align-items: center;
+}
+.ticker-inner {
+  display: flex;
+  animation: ticker 30s linear infinite;
+  white-space: nowrap;
+}
+.ticker-item {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+  color: #fff; padding: 0 48px;
+  display: flex; align-items: center; gap: 20px;
+}
+.ticker-item::after { content: '◆'; font-size: .45rem; opacity: .6; }
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 32px; width: 100%; z-index: 900;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px;
+  height: 60px;
+}
+.nav-inner {
+  width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(8,8,8,.92);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--wire);
+  padding: 0 32px;
+  height: 100%;
+  border-left: 3px solid var(--red);
+}
+.logo {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.6rem; letter-spacing: .1em;
+  color: #fff;
+}
+.logo sup { color: var(--red); font-size: .6rem; vertical-align: top; margin-top: 6px; display: inline-block; }
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a {
+  font-size: .78rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none;
+  transition: color .2s;
+  font-weight: 600;
+}
+.nav-links a:hover { color: var(--red); }
+.nav-right { display: flex; align-items: center; gap: 16px; }
+.nav-search {
+  width: 36px; height: 36px;
+  border: 1px solid var(--wire); background: transparent;
+  color: var(--muted); font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.nav-search:hover { border-color: var(--red); color: var(--red); }
+.btn-nav {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: .8rem; letter-spacing: .15em; text-transform: uppercase;
+  background: var(--red); color: #fff; border: none;
+  padding: 10px 24px; cursor: pointer;
+  clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  transition: background .2s;
+}
+.btn-nav:hover { background: var(--red2); }
+
+/* ─── HERO ─── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 32px;
+  overflow: hidden;
+}
+.hero-left {
+  position: relative;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 140px 64px 80px;
+  z-index: 2;
+}
+/* diagonal cut */
+.hero-left::after {
+  content: '';
+  position: absolute; right: -60px; top: 0; bottom: 0;
+  width: 120px;
+  background: var(--black);
+  transform: skewX(-5deg);
+  z-index: 1;
+}
+.hero-right {
+  position: relative;
+  overflow: hidden;
+}
+.hero-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: brightness(.55) saturate(1.1);
+}
+/* red scan line overlay */
+.hero-right::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg, rgba(212,43,15,.04) 0px, rgba(212,43,15,.04) 1px,
+    transparent 1px, transparent 4px
+  );
+  pointer-events: none;
+}
+.hero-right::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(8,8,8,1) 0%, rgba(8,8,8,.1) 40%, transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .72rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 28px;
+}
+.hero-tag::before { content: ''; width: 36px; height: 1px; background: var(--red); }
+
+h1.display {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(4rem, 7vw, 8rem);
+  line-height: .88;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+h1.display .accent { color: var(--red); }
+h1.display .stroke {
+  -webkit-text-stroke: 1px rgba(255,255,255,.25);
+  color: transparent;
+}
+
+.hero-desc {
+  font-size: 1.05rem; line-height: 1.65;
+  color: var(--muted); max-width: 440px;
+  margin-bottom: 48px;
+  border-left: 2px solid var(--red);
+  padding-left: 20px;
+}
+
+.hero-btns { display: flex; gap: 14px; }
+.btn-primary {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: .9rem; letter-spacing: .15em; text-transform: uppercase;
+  background: var(--red); color: #fff; border: none;
+  padding: 18px 40px; cursor: pointer;
+  clip-path: polygon(14px 0%, 100% 0%, calc(100% - 14px) 100%, 0% 100%);
+  transition: background .2s, transform .15s;
+  text-decoration: none; display: inline-block;
+}
+.btn-primary:hover { background: var(--red2); transform: translateY(-2px); }
+.btn-ghost {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: .9rem; letter-spacing: .15em; text-transform: uppercase;
+  background: transparent; color: var(--text);
+  border: 1px solid var(--wire);
+  padding: 18px 40px; cursor: pointer;
+  transition: border-color .2s, color .2s;
+  text-decoration: none; display: inline-block;
+}
+.btn-ghost:hover { border-color: var(--red); color: var(--red); }
+
+/* hero counters */
+.hero-stats {
+  position: absolute; bottom: 48px; left: 64px;
+  display: flex; gap: 48px;
+}
+.hstat-num {
+  font-family: 'Anton', sans-serif;
+  font-size: 2.2rem; color: var(--red); line-height: 1;
+}
+.hstat-lbl {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .65rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--muted); margin-top: 2px;
+}
+
+/* Hero image label */
+.hero-img-badge {
+  position: absolute; bottom: 32px; right: 32px; z-index: 3;
+  background: rgba(8,8,8,.85); border: 1px solid var(--wire);
+  border-left: 3px solid var(--red);
+  padding: 14px 20px;
+}
+.hib-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 4px;
+}
+.hib-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: 1rem;
+}
+
+/* ─── STRIP ─── */
+.brands-strip {
+  background: var(--dark1);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 0 48px;
+  display: flex; align-items: center;
+}
+.bs-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--red); white-space: nowrap; margin-right: 40px;
+  padding: 22px 0;
+}
+.bs-items {
+  display: flex; flex: 1; overflow: hidden;
+  animation: marquee 20s linear infinite;
+  gap: 0;
+}
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.bs-item {
+  flex-shrink: 0;
+  padding: 20px 40px;
+  border-left: 1px solid var(--border);
+  font-family: 'Anton', sans-serif;
+  font-size: 1.1rem; letter-spacing: .08em;
+  color: rgba(255,255,255,.18);
+  transition: color .3s; white-space: nowrap;
+}
+.bs-item:hover { color: rgba(255,255,255,.7); }
+
+/* ─── SECTION BASE ─── */
+section { padding: 100px 64px; }
+.sec-eyebrow {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .68rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 14px;
+}
+.sec-eyebrow::before { content: '//'; opacity: .5; }
+h2.sec-title {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(2.5rem, 4vw, 4.5rem);
+  text-transform: uppercase; letter-spacing: -.01em;
+  line-height: 1; margin-bottom: 10px;
+}
+.sec-sub {
+  font-size: 1rem; color: var(--muted);
+  margin-bottom: 60px; max-width: 500px; line-height: 1.6;
+}
+
+/* ─── CATEGORIES ─── */
+#categorias { background: var(--dark1); }
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 320px 240px;
+  gap: 3px;
+}
+.cat-card {
+  position: relative; overflow: hidden; cursor: pointer;
+  background: var(--dark3);
+}
+.cat-card:nth-child(1) { grid-column: span 5; grid-row: span 2; }
+.cat-card:nth-child(2) { grid-column: span 7; }
+.cat-card:nth-child(3) { grid-column: span 3; }
+.cat-card:nth-child(4) { grid-column: span 3; }
+.cat-card:nth-child(5) { grid-column: span 3; }
+.cat-card:nth-child(6) { grid-column: span 3; }
+
+.cat-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .7s ease, filter .4s;
+  filter: brightness(.5) saturate(.9);
+}
+.cat-card:hover .cat-img { transform: scale(1.08); filter: brightness(.35) saturate(1); }
+
+/* scan overlay */
+.cat-scan {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg, rgba(0,0,0,.08) 0px, rgba(0,0,0,.08) 1px, transparent 1px, transparent 3px
+  );
+  pointer-events: none;
+}
+
+.cat-content {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 28px;
+  background: linear-gradient(to top, rgba(0,0,0,.9) 0%, transparent 100%);
+}
+.cat-num {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .62rem; letter-spacing: .25em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 6px;
+}
+.cat-title {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(1.3rem, 2.5vw, 2.2rem);
+  text-transform: uppercase; letter-spacing: .03em; line-height: 1;
+}
+.cat-count { font-size: .82rem; color: var(--muted); margin-top: 6px; }
+
+.cat-arrow {
+  position: absolute; top: 20px; right: 20px;
+  width: 38px; height: 38px;
+  border: 1px solid rgba(255,255,255,.12);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; color: white;
+  transition: background .25s, border-color .25s;
+}
+.cat-card:hover .cat-arrow { background: var(--red); border-color: var(--red); }
+
+/* ─── PRODUCTS ─── */
+#productos { background: var(--black); }
+.prod-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px; }
+.prod-filters { display: flex; gap: 0; }
+.pf {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: .78rem; letter-spacing: .15em; text-transform: uppercase;
+  border: 1px solid var(--wire); background: transparent;
+  color: var(--muted); padding: 10px 22px; cursor: pointer;
+  margin-left: -1px; transition: all .2s;
+}
+.pf.on, .pf:hover { background: var(--red); border-color: var(--red); color: #fff; z-index: 1; position: relative; }
+
+.prod-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+.prod-card {
+  background: var(--dark2);
+  position: relative; overflow: hidden;
+  border: 1px solid var(--border);
+  transition: border-color .3s;
+  cursor: pointer;
+}
+.prod-card:hover { border-color: rgba(212,43,15,.45); }
+
+.prod-img-wrap {
+  position: relative;
+  height: 220px; overflow: hidden;
+  background: var(--dark3);
+}
+.prod-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .5s, filter .3s;
+  filter: brightness(.85) saturate(1.05);
+}
+.prod-card:hover .prod-img { transform: scale(1.06); filter: brightness(.7); }
+
+.prod-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,.7) 100%);
+}
+
+.prod-badge {
+  position: absolute; top: 14px; left: 14px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .62rem; letter-spacing: .18em; text-transform: uppercase;
+  padding: 3px 10px;
+}
+.badge-hot  { background: var(--red); color: #fff; }
+.badge-rare { background: var(--amber); color: #000; }
+.badge-new  { background: #0b9f5e; color: #fff; }
+.badge-sale { background: #fff; color: #000; }
+
+.prod-wish {
+  position: absolute; top: 12px; right: 12px;
+  width: 32px; height: 32px;
+  background: rgba(0,0,0,.6); border: 1px solid var(--wire);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem; cursor: pointer;
+  transition: background .2s;
+}
+.prod-wish:hover { background: var(--red); border-color: var(--red); }
+
+.prod-body { padding: 20px 20px 24px; }
+.prod-brand {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .62rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 6px;
+}
+.prod-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: 1.1rem; line-height: 1.25;
+  margin-bottom: 6px;
+}
+.prod-stars { font-size: .8rem; color: var(--amber); margin-bottom: 8px; }
+.prod-stars span { color: var(--muted); font-size: .75rem; }
+.prod-desc { font-size: .85rem; color: var(--muted); line-height: 1.5; margin-bottom: 14px; }
+.prod-compat {
+  font-size: .75rem; color: var(--muted);
+  border-top: 1px solid var(--border); padding-top: 12px; margin-bottom: 16px;
+  line-height: 1.5;
+}
+.prod-compat strong { color: rgba(212,43,15,.8); }
+.prod-footer { display: flex; align-items: center; justify-content: space-between; }
+.prod-price {
+  font-family: 'Anton', sans-serif; font-size: 1.55rem;
+  letter-spacing: .02em;
+}
+.prod-price-old { font-size: .82rem; color: var(--muted); text-decoration: line-through; margin-left: 6px; }
+.add-cart {
+  width: 42px; height: 42px;
+  background: var(--red); border: none; cursor: pointer;
+  color: #fff; font-size: 1.3rem;
+  clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  transition: background .2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.add-cart:hover { background: var(--red2); }
+
+/* ─── FEATURED PRODUCT WIDE ─── */
+.prod-featured {
+  background: var(--dark1);
+  border: 1px solid var(--border);
+  display: grid; grid-template-columns: 1fr 1fr;
+  margin-top: 2px;
+}
+.pf-img {
+  height: 400px;
+  position: relative; overflow: hidden;
+}
+.pf-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: brightness(.6);
+  transition: transform .7s;
+}
+.prod-featured:hover .pf-img img { transform: scale(1.04); }
+.pf-label {
+  position: absolute; top: 24px; left: 24px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .68rem; letter-spacing: .25em; text-transform: uppercase;
+  color: var(--amber); background: rgba(0,0,0,.7);
+  padding: 4px 12px; border-left: 2px solid var(--amber);
+}
+.pf-body {
+  padding: 48px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.pf-eyebrow {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .65rem; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.pf-eyebrow::before { content: '◆'; font-size: .4rem; }
+.pf-name {
+  font-family: 'Anton', sans-serif;
+  font-size: 2.5rem; text-transform: uppercase; line-height: 1;
+  margin-bottom: 16px;
+}
+.pf-desc { font-size: 1rem; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+.pf-specs {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 32px;
+}
+.pf-spec {
+  background: var(--dark3); padding: 12px 14px;
+  border-left: 2px solid var(--red);
+}
+.pf-spec-lbl { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.pf-spec-val { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.1rem; }
+.pf-price {
+  font-family: 'Anton', sans-serif; font-size: 2.8rem; color: var(--amber);
+  margin-bottom: 24px;
+}
+
+/* ─── RARE / EXCLUSIVE ─── */
+#exclusivos {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(232,160,0,.06) 0%, transparent 55%),
+    var(--dark2);
+}
+.excl-layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: 64px; align-items: start; }
+.excl-left { }
+.excl-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .68rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 20px;
+}
+.excl-badge::before { content: '◆'; font-size: .45rem; }
+.excl-left h2 { color: var(--amber); margin-bottom: 20px; }
+.excl-left p { color: var(--muted); line-height: 1.75; margin-bottom: 36px; font-size: 1rem; }
+.excl-list { list-style: none; margin-bottom: 40px; }
+.excl-list li {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 0; border-bottom: 1px solid var(--border);
+  font-size: .95rem; color: rgba(255,255,255,.65); line-height: 1.5;
+}
+.excl-list li::before { content: '▶'; color: var(--amber); font-size: .5rem; margin-top: 5px; flex-shrink: 0; }
+
+.excl-cards { display: flex; flex-direction: column; gap: 3px; }
+.excl-card {
+  display: grid; grid-template-columns: 200px 1fr;
+  background: var(--dark3);
+  border: 1px solid var(--border);
+  transition: border-color .3s;
+  cursor: pointer; overflow: hidden;
+}
+.excl-card:hover { border-color: rgba(232,160,0,.4); }
+.excl-img-wrap { position: relative; height: 160px; overflow: hidden; }
+.excl-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: brightness(.6) saturate(.8);
+  transition: transform .5s, filter .3s;
+}
+.excl-card:hover .excl-img { transform: scale(1.06); filter: brightness(.45); }
+.excl-img-label {
+  position: absolute; bottom: 10px; left: 10px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .58rem; letter-spacing: .18em; text-transform: uppercase;
+  background: rgba(0,0,0,.75); color: var(--amber); padding: 3px 8px;
+}
+.excl-info { padding: 24px; display: flex; flex-direction: column; justify-content: center; }
+.excl-maker { font-family: 'Share Tech Mono', monospace; font-size: .62rem; letter-spacing: .2em; text-transform: uppercase; color: var(--amber); margin-bottom: 6px; }
+.excl-name { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.15rem; margin-bottom: 6px; }
+.excl-desc { font-size: .82rem; color: var(--muted); line-height: 1.4; margin-bottom: 12px; }
+.excl-row { display: flex; align-items: center; justify-content: space-between; }
+.excl-price { font-family: 'Anton', sans-serif; font-size: 1.5rem; color: var(--amber); }
+.excl-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .6rem; letter-spacing: .16em; text-transform: uppercase;
+  border: 1px solid rgba(232,160,0,.4); color: var(--amber); padding: 3px 10px;
+}
+
+/* ─── WHY US ─── */
+#nosotros { background: var(--black); }
+.why-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; }
+.why-card {
+  background: var(--dark1);
+  border: 1px solid var(--border);
+  padding: 36px 28px;
+  position: relative; overflow: hidden;
+  transition: border-color .3s;
+}
+.why-card:hover { border-color: rgba(212,43,15,.4); }
+.why-card::before {
+  content: attr(data-n);
+  position: absolute; top: -10px; right: 16px;
+  font-family: 'Anton', sans-serif; font-size: 5rem; letter-spacing: -.05em;
+  color: rgba(255,255,255,.03); line-height: 1;
+  pointer-events: none;
+}
+.why-icon { font-size: 2rem; margin-bottom: 18px; display: block; }
+.why-title { font-family: 'Anton', sans-serif; font-size: 1.4rem; text-transform: uppercase; margin-bottom: 10px; }
+.why-desc { font-size: .9rem; color: var(--muted); line-height: 1.6; }
+
+/* ─── REVIEWS ─── */
+#reviews { background: var(--dark1); }
+.rev-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+.rev-card {
+  background: var(--dark2);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--red);
+  padding: 32px;
+  transition: border-top-color .3s;
+}
+.rev-card:hover { border-top-color: var(--red2); }
+.rev-stars { color: var(--amber); margin-bottom: 18px; font-size: .95rem; }
+.rev-text { color: rgba(255,255,255,.65); font-size: .92rem; line-height: 1.7; font-style: italic; margin-bottom: 24px; }
+.rev-author { display: flex; align-items: center; gap: 14px; }
+.rev-avatar {
+  width: 46px; height: 46px; border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(212,43,15,.3);
+  flex-shrink: 0;
+}
+.rev-avatar img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.6); }
+.rev-name { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1rem; }
+.rev-car { font-size: .75rem; color: var(--muted); margin-top: 1px; }
+.rev-verified { font-size: .65rem; color: #0b9f5e; letter-spacing: .12em; text-transform: uppercase; margin-top: 3px; }
+
+/* ─── CONTACT BANNER ─── */
+.contact-banner {
+  background: var(--dark3);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: grid; grid-template-columns: repeat(3,1fr);
+}
+.cb-item {
+  padding: 32px 40px;
+  display: flex; align-items: center; gap: 18px;
+  border-right: 1px solid var(--border);
+  transition: background .2s;
+  cursor: pointer;
+}
+.cb-item:hover { background: rgba(212,43,15,.05); }
+.cb-icon { font-size: 1.8rem; }
+.cb-title { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1rem; }
+.cb-sub { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+
+/* ─── NEWSLETTER ─── */
+.newsletter {
+  background: var(--red);
+  padding: 80px 64px;
+  display: flex; align-items: center; justify-content: space-between; gap: 40px;
+  position: relative; overflow: hidden;
+}
+.newsletter::before {
+  content: 'SUBSCRIBE';
+  position: absolute; right: -20px; top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Anton', sans-serif;
+  font-size: 10rem; opacity: .06; letter-spacing: -.02em; pointer-events: none;
+}
+.nl-left h2 { font-family: 'Anton', sans-serif; font-size: 2.5rem; text-transform: uppercase; color: #fff; margin-bottom: 8px; }
+.nl-left p { color: rgba(255,255,255,.75); font-size: 1rem; }
+.nl-form { display: flex; gap: 0; min-width: 480px; }
+.nl-input {
+  flex: 1; padding: 18px 24px;
+  background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.2);
+  color: #fff; font-family: 'Rajdhani', sans-serif; font-size: .95rem; outline: none;
+  border-right: none;
+}
+.nl-input::placeholder { color: rgba(255,255,255,.45); }
+.nl-btn {
+  padding: 18px 32px;
+  background: #000; color: #fff; border: none; cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: .85rem; letter-spacing: .15em; text-transform: uppercase;
+  white-space: nowrap; transition: background .2s;
+}
+.nl-btn:hover { background: var(--dark2); }
+
+/* ─── FOOTER ─── */
+footer {
+  background: #000;
+  padding: 72px 64px 32px;
+}
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 56px; margin-bottom: 56px; }
+.ft-logo { font-family: 'Anton', sans-serif; font-size: 2.2rem; letter-spacing: .08em; margin-bottom: 16px; }
+.ft-logo sup { color: var(--red); font-size: .55rem; }
+.ft-desc { color: var(--muted); font-size: .88rem; line-height: 1.7; margin-bottom: 28px; }
+.ft-social { display: flex; gap: 8px; }
+.soc {
+  width: 36px; height: 36px;
+  border: 1px solid var(--wire); background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .85rem; color: var(--muted); cursor: pointer; text-decoration: none;
+  transition: all .2s;
+}
+.soc:hover { background: var(--red); border-color: var(--red); color: #fff; }
+.ft-col h4 {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .65rem; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 20px;
+}
+.ft-col ul { list-style: none; }
+.ft-col li { margin-bottom: 10px; }
+.ft-col a { color: rgba(255,255,255,.45); font-size: .88rem; text-decoration: none; transition: color .2s; }
+.ft-col a:hover { color: var(--red); }
+.footer-bottom {
+  border-top: 1px solid var(--border); padding-top: 28px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.ft-copy { font-size: .8rem; color: var(--muted); }
+.ft-payments { display: flex; gap: 8px; }
+.pay-badge {
+  padding: 4px 10px; border: 1px solid var(--wire);
+  font-family: 'Share Tech Mono', monospace; font-size: .6rem;
+  letter-spacing: .1em; color: var(--muted); text-transform: uppercase;
+}
+
+/* ─── CART FLOAT ─── */
+.cart-float {
+  position: fixed; bottom: 32px; right: 32px; z-index: 998;
+  background: var(--red); width: 58px; height: 58px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; cursor: pointer;
+  clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+  box-shadow: 0 6px 24px rgba(212,43,15,.45);
+  transition: transform .2s, background .2s;
+}
+.cart-float:hover { transform: scale(1.06); background: var(--red2); }
+.cart-bubble {
+  position: absolute; top: -6px; right: -6px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #fff; color: var(--red);
+  font-family: 'Anton', sans-serif; font-size: .7rem;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ─── ANIM ─── */
+.reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── TOAST ─── */
+.toast {
+  position: fixed; bottom: 100px; right: 32px; z-index: 9997;
+  background: var(--dark2); border: 1px solid var(--border); border-left: 3px solid #0b9f5e;
+  padding: 14px 20px;
+  font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: .9rem;
+  opacity: 0; transform: translateX(20px);
+  transition: all .3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(0); }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Agregado al carrito</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <span class="ticker-item">Envío gratis en pedidos mayores a $500 USD</span>
+    <span class="ticker-item">Turbo Garrett GTX3582R Gen II — en stock</span>
+    <span class="ticker-item">Kits JDM auténtico — importación directa Japón</span>
+    <span class="ticker-item">Asesoría técnica gratuita por WhatsApp</span>
+    <span class="ticker-item">Devolución en 30 días sin preguntas</span>
+    <span class="ticker-item">Envío gratis en pedidos mayores a $500 USD</span>
+    <span class="ticker-item">Turbo Garrett GTX3582R Gen II — en stock</span>
+    <span class="ticker-item">Kits JDM auténtico — importación directa Japón</span>
+    <span class="ticker-item">Asesoría técnica gratuita por WhatsApp</span>
+    <span class="ticker-item">Devolución en 30 días sin preguntas</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">TORQUE<sup>®</sup></div>
+    <ul class="nav-links">
+      <li><a href="#categorias">Categorías</a></li>
+      <li><a href="#productos">Productos</a></li>
+      <li><a href="#exclusivos">Raros & Exclusivos</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nav-search">🔍</button>
+      <button class="btn-nav">Catálogo PDF</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Performance Parts · México</div>
+    <h1 class="display">
+      PIEZAS<br>
+      <span class="accent">QUE</span><br>
+      <span class="stroke">IMPORTAN</span>
+    </h1>
+    <p class="hero-desc">Autopartes de alto rendimiento, piezas JDM raras y componentes de competencia. Más de 12,000 referencias. Asesoría técnica incluida.</p>
+    <div class="hero-btns">
+      <a href="#productos" class="btn-primary">Ver Productos</a>
+      <a href="#exclusivos" class="btn-ghost">Piezas Raras</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat">
+        <div class="hstat-num">12K+</div>
+        <div class="hstat-lbl">Piezas</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num">320</div>
+        <div class="hstat-lbl">Marcas</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num">18yr</div>
+        <div class="hstat-lbl">Experiencia</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <!-- Real engine photo -->
+    <img class="hero-img"
+      src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=85&auto=format&fit=crop"
+      alt="Motor de alto rendimiento"
+      onerror="this.src='https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1400&q=85&auto=format&fit=crop'">
+    <div class="hero-img-badge">
+      <div class="hib-label">En Imagen</div>
+      <div class="hib-name">Motor 2JZ-GTE 900hp Build</div>
+    </div>
+  </div>
+</div>
+
+<!-- BRANDS STRIP -->
+<div class="brands-strip">
+  <div class="bs-label">Marcas Oficiales</div>
+  <div class="bs-items">
+    <div class="bs-item">Garrett</div><div class="bs-item">HKS</div>
+    <div class="bs-item">Brembo</div><div class="bs-item">BC Racing</div>
+    <div class="bs-item">Tomei</div><div class="bs-item">Motec</div>
+    <div class="bs-item">Cusco</div><div class="bs-item">Tein</div>
+    <div class="bs-item">AEM</div><div class="bs-item">Greddy</div>
+    <div class="bs-item">Mugen</div><div class="bs-item">Recaro</div>
+    <!-- repeat for marquee -->
+    <div class="bs-item">Garrett</div><div class="bs-item">HKS</div>
+    <div class="bs-item">Brembo</div><div class="bs-item">BC Racing</div>
+    <div class="bs-item">Tomei</div><div class="bs-item">Motec</div>
+    <div class="bs-item">Cusco</div><div class="bs-item">Tein</div>
+    <div class="bs-item">AEM</div><div class="bs-item">Greddy</div>
+    <div class="bs-item">Mugen</div><div class="bs-item">Recaro</div>
+  </div>
+</div>
+
+<!-- CATEGORÍAS -->
+<section id="categorias">
+  <div class="sec-eyebrow">Explorar</div>
+  <h2 class="sec-title">Categorías</h2>
+  <p class="sec-sub">Desde motores completos hasta tornillos de titanio — todo lo que tu build necesita.</p>
+
+  <div class="cat-grid">
+    <!-- 1. Motor & Turbo — LARGE -->
+    <div class="cat-card reveal">
+      <img class="cat-img"
+        src="https://images.unsplash.com/photo-1696958897748-e92a97e4d9ba?w=900&q=80&auto=format&fit=crop"
+        alt="Motor y turbo"
+        onerror="this.src='https://images.unsplash.com/photo-1543465077-db45d34b88a5?w=900&q=80'">
+      <div class="cat-scan"></div>
+      <div class="cat-arrow">→</div>
+      <div class="cat-content">
+        <div class="cat-num">01 / Motor & Turbo</div>
+        <div class="cat-title">Motor &amp;<br>Turbo</div>
+        <div class="cat-count">3,240 referencias · Kits completos disponibles</div>
+      </div>
+    </div>
+
+    <!-- 2. Suspensión — WIDE -->
+    <div class="cat-card reveal">
+      <img class="cat-img"
+        src="https://images.unsplash.com/photo-1609630875171-b1321377ee65?w=1000&q=80&auto=format&fit=crop"
+        alt="Suspensión coilovers"
+        onerror="this.src='https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?w=900'">
+      <div class="cat-scan"></div>
+      <div class="cat-arrow">→</div>
+      <div class="cat-content">
+        <div class="cat-num">02 / Suspensión</div>
+        <div class="cat-title">Suspensión</div>
+        <div class="cat-count">1,890 referencias</div>
+      </div>
+    </div>
+
+    <!-- 3. Transmisión -->
+    <div class="cat-card reveal">
+      <img class="cat-img"
+        src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&q=80&auto=format&fit=crop"
+        alt="Transmisión"
+        onerror="this.src='https://images.unsplash.com/photo-1484704849700-f032a568e944?w=600'">
+      <div class="cat-scan"></div>
+      <div class="cat-arrow">→</div>
+      <div class="cat-content">
+        <div class="cat-num">03</div>
+        <div class="cat-title">Transmisión</div>
+        <div class="cat-count">980 refs</div>
+      </div>
+    </div>
+
+    <!-- 4. Frenos -->
+    <div class="cat-card reveal">
+      <img class="cat-img"
+        src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=600&q=80&auto=format&fit=crop"
+        alt="Frenos Brembo"
+        onerror="this.src='https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?w=600'">
+      <div class="cat-scan"></div>
+      <div class="cat-arrow">→</div>
+      <div class="cat-content">
+        <div class="cat-num">04</div>
+        <div class="cat-title">Frenos</div>
+        <div class="cat-count">1,120 refs</div>
+      </div>
+    </div>
+
+    <!-- 5. Escape -->
+    <div class="cat-card reveal">
+      <img class="cat-img"
+        src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&q=80&auto=format&fit=crop"
+        alt="Escape deportivo"
+        onerror="this.src='https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600'">
+      <div class="cat-scan"></div>
+      <div class="cat-arrow">→</div>
+      <div class="cat-content">
+        <div class="cat-num">05</div>
+        <div class="cat-title">Escape</div>
+        <div class="cat-count">760 refs</div>
+      </div>
+    </div>
+
+    <!-- 6. Exterior & Aero -->
+    <div class="cat-card reveal">
+      <img class="cat-img"
+        src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=600&q=80&auto=format&fit=crop"
+        alt="Aero y exterior"
+        onerror="this.src='https://images.unsplash.com/photo-1488195799440-4e44f09f3e99?w=600'">
+      <div class="cat-scan"></div>
+      <div class="cat-arrow">→</div>
+      <div class="cat-content">
+        <div class="cat-num">06</div>
+        <div class="cat-title">Aero</div>
+        <div class="cat-count">2,400 refs</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTOS -->
+<section id="productos">
+  <div class="prod-header">
+    <div>
+      <div class="sec-eyebrow">Inventario</div>
+      <h2 class="sec-title">Más Vendidos</h2>
+    </div>
+    <div class="prod-filters">
+      <button class="pf on" onclick="filterProd(this)">Todos</button>
+      <button class="pf" onclick="filterProd(this)">Motor</button>
+      <button class="pf" onclick="filterProd(this)">Suspensión</button>
+      <button class="pf" onclick="filterProd(this)">Turbo</button>
+      <button class="pf" onclick="filterProd(this)">Frenos</button>
+    </div>
+  </div>
+
+  <div class="prod-grid">
+
+    <!-- PROD 1 -->
+    <div class="prod-card reveal">
+      <div class="prod-img-wrap">
+        <img class="prod-img"
+          src="https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=600&q=80&auto=format&fit=crop"
+          alt="Turbocompresor Garrett"
+          onerror="this.src='https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600'">
+        <div class="prod-overlay"></div>
+        <div class="prod-badge badge-hot">HOT</div>
+        <div class="prod-wish">♡</div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-brand">Garrett Performance</div>
+        <div class="prod-name">Turbocompresor GTX3582R Gen II</div>
+        <div class="prod-stars">★★★★★ <span>(128)</span></div>
+        <div class="prod-desc">Turbina de competencia con cojinetes de doble bola. Hasta 900hp. Flange T3/T4.</div>
+        <div class="prod-compat">Compatible con <strong>Nissan RB26 · Toyota 2JZ · Honda K20</strong></div>
+        <div class="prod-footer">
+          <div><span class="prod-price">$2,840</span><span class="prod-price-old">$3,200</span></div>
+          <button class="add-cart" onclick="addCart(this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROD 2 -->
+    <div class="prod-card reveal">
+      <div class="prod-img-wrap">
+        <img class="prod-img"
+          src="https://images.unsplash.com/photo-1609630875171-b1321377ee65?w=600&q=80&auto=format&fit=crop"
+          alt="Coilovers BC Racing"
+          onerror="this.src='https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?w=600'">
+        <div class="prod-overlay"></div>
+        <div class="prod-badge badge-new">NUEVO</div>
+        <div class="prod-wish">♡</div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-brand">BC Racing</div>
+        <div class="prod-name">Coilovers BR Series Adjustable</div>
+        <div class="prod-stars">★★★★★ <span>(89)</span></div>
+        <div class="prod-desc">30 niveles de ajuste de amortiguación. Altura regulable. Acero inoxidable.</div>
+        <div class="prod-compat">Compatible con <strong>BMW E46 · Subaru STI · Mitsubishi EVO X</strong></div>
+        <div class="prod-footer">
+          <div><span class="prod-price">$1,290</span></div>
+          <button class="add-cart" onclick="addCart(this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROD 3 -->
+    <div class="prod-card reveal">
+      <div class="prod-img-wrap">
+        <img class="prod-img"
+          src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=600&q=80&auto=format&fit=crop"
+          alt="Kit frenos Brembo"
+          onerror="this.src='https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600'">
+        <div class="prod-overlay"></div>
+        <div class="prod-badge badge-rare">RARO</div>
+        <div class="prod-wish">♡</div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-brand">Brembo GT Racing</div>
+        <div class="prod-name">Kit Frenos 6 Pistones 380mm</div>
+        <div class="prod-stars">★★★★★ <span>(54)</span></div>
+        <div class="prod-desc">Monobloque mecanizado. Disco ventilado 380mm. Uso en pista y calle.</div>
+        <div class="prod-compat">Compatible con <strong>Porsche 911 · Ferrari 458 · Lamborghini</strong></div>
+        <div class="prod-footer">
+          <div><span class="prod-price">$4,600</span><span class="prod-price-old">$5,200</span></div>
+          <button class="add-cart" onclick="addCart(this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROD 4 -->
+    <div class="prod-card reveal">
+      <div class="prod-img-wrap">
+        <img class="prod-img"
+          src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&q=80&auto=format&fit=crop"
+          alt="Escape HKS"
+          onerror="this.src='https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=600'">
+        <div class="prod-overlay"></div>
+        <div class="prod-badge badge-hot">TOP</div>
+        <div class="prod-wish">♡</div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-brand">HKS Japan</div>
+        <div class="prod-name">Escape Catback Titanio Hi-Power</div>
+        <div class="prod-stars">★★★★☆ <span>(210)</span></div>
+        <div class="prod-desc">Titanio grado aeronáutico. -15kg vs stock. Válvula electrónica de sonido.</div>
+        <div class="prod-compat">Compatible con <strong>Toyota Supra A90 · BMW G80 M3</strong></div>
+        <div class="prod-footer">
+          <div><span class="prod-price">$3,100</span></div>
+          <button class="add-cart" onclick="addCart(this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROD 5 -->
+    <div class="prod-card reveal">
+      <div class="prod-img-wrap">
+        <img class="prod-img"
+          src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&q=80&auto=format&fit=crop"
+          alt="ECU Motec"
+          onerror="this.src='https://images.unsplash.com/photo-1527786356703-4b100091cd2c?w=600'">
+        <div class="prod-overlay"></div>
+        <div class="prod-badge badge-new">NUEVO</div>
+        <div class="prod-wish">♡</div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-brand">Motec Australia</div>
+        <div class="prod-name">ECU M150 Standalone System</div>
+        <div class="prod-stars">★★★★★ <span>(37)</span></div>
+        <div class="prod-desc">4D fuel/ignition maps. Launch control, flat-shift, traction control integrado.</div>
+        <div class="prod-compat">Compatible con <strong>Universal 4-8 cilindros</strong></div>
+        <div class="prod-footer">
+          <div><span class="prod-price">$6,800</span></div>
+          <button class="add-cart" onclick="addCart(this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROD 6 -->
+    <div class="prod-card reveal">
+      <div class="prod-img-wrap">
+        <img class="prod-img"
+          src="https://images.unsplash.com/photo-1493238792000-8113da705763?w=600&q=80&auto=format&fit=crop"
+          alt="Árbol de levas Tomei"
+          onerror="this.src='https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600'">
+        <div class="prod-overlay"></div>
+        <div class="prod-badge badge-rare">JDM</div>
+        <div class="prod-wish">♡</div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-brand">Tomei Japan</div>
+        <div class="prod-name">Árbol de Levas Procam 272°</div>
+        <div class="prod-stars">★★★★★ <span>(66)</span></div>
+        <div class="prod-desc">272° de duración. Stock directo para RB26/SR20. Fabricado en Japón.</div>
+        <div class="prod-compat">Compatible con <strong>Nissan SR20DET · RB26DETT</strong></div>
+        <div class="prod-footer">
+          <div><span class="prod-price">$890</span><span class="prod-price-old">$1,100</span></div>
+          <button class="add-cart" onclick="addCart(this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROD 7 -->
+    <div class="prod-card reveal">
+      <div class="prod-img-wrap">
+        <img class="prod-img"
+          src="https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=600&q=80&auto=format&fit=crop"
+          alt="Intercooler Mishimoto"
+          onerror="this.src='https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600'">
+        <div class="prod-overlay"></div>
+        <div class="prod-badge badge-sale">-20%</div>
+        <div class="prod-wish">♡</div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-brand">Mishimoto</div>
+        <div class="prod-name">Intercooler Stepped Core Bar&Plate</div>
+        <div class="prod-stars">★★★★★ <span>(143)</span></div>
+        <div class="prod-desc">Reducción de temperatura de aire hasta 55°C. Diseño stepped core para máxima eficiencia.</div>
+        <div class="prod-compat">Compatible con <strong>EVO · WRX STI · Focus RS</strong></div>
+        <div class="prod-footer">
+          <div><span class="prod-price">$780</span><span class="prod-price-old">$975</span></div>
+          <button class="add-cart" onclick="addCart(this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROD 8 -->
+    <div class="prod-card reveal">
+      <div class="prod-img-wrap">
+        <img class="prod-img"
+          src="https://images.unsplash.com/photo-1616455579100-2ceaa4088152?w=600&q=80&auto=format&fit=crop"
+          alt="Volante Sparco"
+          onerror="this.src='https://images.unsplash.com/photo-1543465077-db45d34b88a5?w=600'">
+        <div class="prod-overlay"></div>
+        <div class="prod-badge badge-new">NUEVO</div>
+        <div class="prod-wish">♡</div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-brand">Sparco Italy</div>
+        <div class="prod-name">Volante R383 Competition 350mm</div>
+        <div class="prod-stars">★★★★★ <span>(91)</span></div>
+        <div class="prod-desc">Cuero perforado + alcántara. Centro desmontable 6 tornillos. Certificado FIA 8860.</div>
+        <div class="prod-compat">Compatible con <strong>Universal · Hub adapter requerido</strong></div>
+        <div class="prod-footer">
+          <div><span class="prod-price">$420</span></div>
+          <button class="add-cart" onclick="addCart(this)">+</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FEATURED WIDE PRODUCT -->
+  <div class="prod-featured reveal">
+    <div class="pf-img">
+      <img src="https://images.unsplash.com/photo-1621993202328-33d19a76f4b8?w=900&q=80&auto=format&fit=crop"
+        alt="Kit motor completo"
+        onerror="this.src='https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900'">
+      <div class="pf-label">Producto Destacado del Mes</div>
+    </div>
+    <div class="pf-body">
+      <div class="pf-eyebrow">Oferta Especial — Stock Limitado</div>
+      <div class="pf-name">Kit Motor Completo 2JZ-GTE Big Single</div>
+      <p class="pf-desc">Todo lo que necesitas para llevar tu 2JZ al siguiente nivel. Kit completo con turbo, intercooler, fuel system, ECU standalone y todos los accesorios. Instalación disponible en nuestro taller.</p>
+      <div class="pf-specs">
+        <div class="pf-spec"><div class="pf-spec-lbl">Potencia objetivo</div><div class="pf-spec-val">800–1,000 HP</div></div>
+        <div class="pf-spec"><div class="pf-spec-lbl">Turbo incluido</div><div class="pf-spec-val">Garrett G42-1200</div></div>
+        <div class="pf-spec"><div class="pf-spec-lbl">ECU</div><div class="pf-spec-val">Haltech Elite 2500</div></div>
+        <div class="pf-spec"><div class="pf-spec-lbl">Garantía</div><div class="pf-spec-val">24 meses</div></div>
+      </div>
+      <div class="pf-price">$14,900 USD</div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn-primary" onclick="addCart(this)">Agregar al Carrito</button>
+        <button class="btn-ghost">Ver Detalles</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RARE / EXCLUSIVE -->
+<section id="exclusivos">
+  <div class="excl-layout">
+    <div class="excl-left">
+      <div class="excl-badge">Piezas Raras &amp; Edición Limitada</div>
+      <h2 class="sec-title" style="color:var(--amber);">ACCESO A LO IMPOSIBLE</h2>
+      <p>Cultivamos relaciones directas con fabricantes en Japón, Europa y EUA para traerte piezas que simplemente no encontrarás en ningún otro lugar. Cada pieza es verificada, documentada y autenticada.</p>
+      <ul class="excl-list">
+        <li>Stock JDM auténtico importado directamente de Japón con documentación</li>
+        <li>Piezas NOS — New Old Stock de fabricantes originales sin abrir</li>
+        <li>Componentes retirados de carreras GT, WRC y Super GT</li>
+        <li>Prototipos de tuning de fabricación limitada o única</li>
+        <li>Certificado de autenticidad en cada compra + inspección técnica</li>
+      </ul>
+      <a href="#" class="btn-primary">Contactar Especialista</a>
+    </div>
+
+    <div class="excl-cards">
+      <!-- RARE 1 -->
+      <div class="excl-card reveal">
+        <div class="excl-img-wrap">
+          <img class="excl-img"
+            src="https://images.unsplash.com/photo-1696958897748-e92a97e4d9ba?w=400&q=80&auto=format&fit=crop"
+            alt="Bloque RB26"
+            onerror="this.src='https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400'">
+          <div class="excl-img-label">NOS · Japan 1995</div>
+        </div>
+        <div class="excl-info">
+          <div class="excl-maker">Nissan Nismo · OEM</div>
+          <div class="excl-name">Bloque RB26DETT N1 — New Old Stock</div>
+          <div class="excl-desc">Bloque N1 original sellado de fábrica. Números coincidentes. Condición inmaculada.</div>
+          <div class="excl-row">
+            <div class="excl-price">$18,500</div>
+            <div class="excl-tag">Solo 1 disponible</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RARE 2 -->
+      <div class="excl-card reveal">
+        <div class="excl-img-wrap">
+          <img class="excl-img"
+            src="https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?w=400&q=80&auto=format&fit=crop"
+            alt="Transaxle Porsche"
+            onerror="this.src='https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400'">
+          <div class="excl-img-label">Porsche Motorsport</div>
+        </div>
+        <div class="excl-info">
+          <div class="excl-maker">Porsche Motorsport · 964 Cup</div>
+          <div class="excl-name">Transaxle 964 Cup Racing — Usado Pista</div>
+          <div class="excl-desc">Utilizado en temporada 1994. Completamente revisado y certificado.</div>
+          <div class="excl-row">
+            <div class="excl-price">$12,200</div>
+            <div class="excl-tag">Edición Limitada</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RARE 3 -->
+      <div class="excl-card reveal">
+        <div class="excl-img-wrap">
+          <img class="excl-img"
+            src="https://images.unsplash.com/photo-1570733577524-3a047079e80d?w=400&q=80&auto=format&fit=crop"
+            alt="Motor WRC Toyota"
+            onerror="this.src='https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400'">
+          <div class="excl-img-label">Toyota TRD · WRC</div>
+        </div>
+        <div class="excl-info">
+          <div class="excl-maker">Toyota TRD · WRC 1999</div>
+          <div class="excl-name">Motor 3S-GT Rally — WRC Campaign</div>
+          <div class="excl-desc">Motor de campaña WRC 1999. Con árbol de levas y culata de competencia original.</div>
+          <div class="excl-row">
+            <div class="excl-price">$22,000</div>
+            <div class="excl-tag">Pieza de Museo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section id="nosotros">
+  <div class="sec-eyebrow">Por qué elegirnos</div>
+  <h2 class="sec-title">18 Años Construyendo Confianza</h2>
+  <p class="sec-sub">No somos una tienda genérica. Somos petrolheads que viven el deporte motor.</p>
+  <div class="why-grid">
+    <div class="why-card reveal" data-n="01">
+      <span class="why-icon">🔬</span>
+      <div class="why-title">Verificación Técnica</div>
+      <p class="why-desc">Cada pieza pasa por inspección técnica antes de salir. Nuestro equipo de mecánicos certifica la calidad.</p>
+    </div>
+    <div class="why-card reveal" data-n="02">
+      <span class="why-icon">✈️</span>
+      <div class="why-title">Importación Directa</div>
+      <p class="why-desc">Alianzas con fabricantes en Japón, Alemania e Italia. Sin intermediarios, precios reales.</p>
+    </div>
+    <div class="why-card reveal" data-n="03">
+      <span class="why-icon">🛡️</span>
+      <div class="why-title">Garantía Real</div>
+      <p class="why-desc">24 meses en componentes nuevos, 12 meses en usados. Soporte post-venta incluido.</p>
+    </div>
+    <div class="why-card reveal" data-n="04">
+      <span class="why-icon">💬</span>
+      <div class="why-title">Asesoría Técnica</div>
+      <p class="why-desc">Ingenieros disponibles por WhatsApp, email y videollamada para guiar tu build paso a paso.</p>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="sec-eyebrow">Comunidad</div>
+  <h2 class="sec-title">Clientes Reales, Resultados Reales</h2>
+  <p class="sec-sub">Más de 8,000 builders en LATAM y España confían en Torque.</p>
+
+  <div class="rev-grid">
+    <div class="rev-card reveal">
+      <div class="rev-stars">★★★★★</div>
+      <p class="rev-text">"Compré el kit de turbo Garrett y llegó en 3 días perfectamente documentado. Mi Supra pasó de 320 a 620hp en banco. El soporte técnico fue increíble durante toda la instalación."</p>
+      <div class="rev-author">
+        <div class="rev-avatar">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop&auto=format" alt="Carlos">
+        </div>
+        <div>
+          <div class="rev-name">Carlos Mendoza</div>
+          <div class="rev-car">Toyota Supra A80 · Guadalajara, MX</div>
+          <div class="rev-verified">✓ Compra verificada</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rev-card reveal">
+      <div class="rev-stars">★★★★★</div>
+      <p class="rev-text">"Los coilovers BC Racing llegaron perfectamente embalados con toda la documentación técnica. La diferencia en el manejo en circuito fue brutal. Los ingenieros me configuraron los settings perfectos."</p>
+      <div class="rev-author">
+        <div class="rev-avatar">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80&fit=crop&auto=format" alt="Rodrigo">
+        </div>
+        <div>
+          <div class="rev-name">Rodrigo Salas</div>
+          <div class="rev-car">BMW E46 M3 · Santiago, Chile</div>
+          <div class="rev-verified">✓ Compra verificada</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rev-card reveal">
+      <div class="rev-stars">★★★★★</div>
+      <p class="rev-text">"Encontré el bloque RB26 N1 que llevaba 4 años buscando. La pieza era inmaculada, con números originales y documentación. Hay cosas aquí que simplemente no existen en el mercado normal."</p>
+      <div class="rev-author">
+        <div class="rev-avatar">
+          <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80&fit=crop&auto=format" alt="Diego">
+        </div>
+        <div>
+          <div class="rev-name">Diego Fernández</div>
+          <div class="rev-car">Nissan Skyline R34 GT-R · Buenos Aires</div>
+          <div class="rev-verified">✓ Compra verificada</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT BANNER -->
+<div class="contact-banner">
+  <div class="cb-item">
+    <div class="cb-icon">📦</div>
+    <div>
+      <div class="cb-title">Envío Express 48h</div>
+      <div class="cb-sub">México, LATAM y España · Gratis +$500 USD</div>
+    </div>
+  </div>
+  <div class="cb-item">
+    <div class="cb-icon">💬</div>
+    <div>
+      <div class="cb-title">Asesoría Técnica Gratis</div>
+      <div class="cb-sub">WhatsApp · Email · Videollamada</div>
+    </div>
+  </div>
+  <div class="cb-item">
+    <div class="cb-icon">🔄</div>
+    <div>
+      <div class="cb-title">Devolución 30 Días</div>
+      <div class="cb-sub">Sin preguntas · Piezas en condición original</div>
+    </div>
+  </div>
+</div>
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+  <div class="nl-left">
+    <h2>DROPS EXCLUSIVOS</h2>
+    <p>Piezas raras, ofertas limitadas y lanzamientos antes que nadie.</p>
+  </div>
+  <div class="nl-form">
+    <input type="email" class="nl-input" placeholder="tu@correo.com" id="nlEmail">
+    <button class="nl-btn" onclick="subscribe()">Suscribirme →</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="ft-logo">TORQUE<sup>®</sup></div>
+      <p class="ft-desc">La tienda de referencia para autopartes de alto rendimiento, piezas JDM y componentes de competencia en Latinoamérica. Desde 2006.</p>
+      <div class="ft-social">
+        <a class="soc" href="#">IG</a>
+        <a class="soc" href="#">YT</a>
+        <a class="soc" href="#">TK</a>
+        <a class="soc" href="#">FB</a>
+        <a class="soc" href="#">X</a>
+      </div>
+    </div>
+    <div class="ft-col">
+      <h4>Categorías</h4>
+      <ul>
+        <li><a href="#">Motor & Turbo</a></li>
+        <li><a href="#">Suspensión & Steering</a></li>
+        <li><a href="#">Transmisión</a></li>
+        <li><a href="#">Frenos</a></li>
+        <li><a href="#">Escape & Exhaust</a></li>
+        <li><a href="#">Exterior & Aero</a></li>
+        <li><a href="#">Interior & Safety</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h4>Información</h4>
+      <ul>
+        <li><a href="#">Sobre Torque</a></li>
+        <li><a href="#">Garantías y Devoluciones</a></li>
+        <li><a href="#">Política de Envíos</a></li>
+        <li><a href="#">Piezas Buscadas</a></li>
+        <li><a href="#">Afiliados</a></li>
+        <li><a href="#">Blog Técnico</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="#">WhatsApp: +52 55 1234-5678</a></li>
+        <li><a href="#">ventas@torquemx.com</a></li>
+        <li><a href="#">Lun–Sáb: 9am – 7pm CST</a></li>
+        <li><a href="#">Taller: CDMX, Naucalpan</a></li>
+        <li><a href="#">Distribuidores en 12 países</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="ft-copy">© 2026 Torque Performance Parts. Todos los derechos reservados.</div>
+    <div class="ft-payments">
+      <div class="pay-badge">VISA</div>
+      <div class="pay-badge">MC</div>
+      <div class="pay-badge">AMEX</div>
+      <div class="pay-badge">OXXO</div>
+      <div class="pay-badge">CRYPTO</div>
+    </div>
+  </div>
+</footer>
+
+<!-- CART FLOAT -->
+<div class="cart-float" onclick="toggleCart()">
+  🛒
+  <div class="cart-bubble" id="cartBubble">0</div>
+</div>
+
+<script>
+  // ─── CURSOR ───
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX - 6 + 'px';
+    cursor.style.top  = e.clientY - 6 + 'px';
+  });
+  document.querySelectorAll('a,button,.prod-card,.cat-card,.excl-card').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+  });
+
+  // ─── CART ───
+  let count = 0;
+  function addCart(btn) {
+    count++;
+    document.getElementById('cartBubble').textContent = count;
+    const orig = btn.textContent;
+    btn.textContent = '✓';
+    btn.style.background = '#0b9f5e';
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); }, 2200);
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.style.background = '';
+    }, 1400);
+  }
+  function toggleCart() { alert('Tu carrito: ' + count + ' artículo(s)'); }
+
+  // ─── FILTER TABS ───
+  function filterProd(el) {
+    document.querySelectorAll('.pf').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+  }
+
+  // ─── REVEAL ON SCROLL ───
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // ─── WISHLIST ───
+  document.querySelectorAll('.prod-wish').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      this.textContent = this.textContent === '♡' ? '♥' : '♡';
+      this.style.color = this.textContent === '♥' ? '#e8210a' : '';
+    });
+  });
+
+  // ─── NEWSLETTER ───
+  function subscribe() {
+    const email = document.getElementById('nlEmail').value;
+    const btn = document.querySelector('.nl-btn');
+    if (email.includes('@')) {
+      btn.textContent = '¡Listo! ✓';
+      btn.style.background = '#0b9f5e';
+    }
+  }
+</script>
+</body>
+</html>
